@@ -1,5 +1,11 @@
 # UNDER CONSTRUCTION
 
+This is a learning project.
+
+##Learning Techs/Libraries:
+-[] SQLAlchemy
+-[] Flask
+
 ## Core Features
 1. Learning Path Management - Create and organize learning topics/modules
 2. Resource Aggregation - Pull resources from various sources (articles, videos, PDFs)

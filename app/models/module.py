@@ -1,9 +1,8 @@
 from datetime import datetime
-from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped
-from sqlalchemy.dialects.postgresql import JSONB
-
-class Base(DeclarativeBase):
-    pass
+from typing import Optional, Dict
+from sqlalchemy import Integer, ForeignKey, func, JSON
+from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped, relationship
+from learning_path import Base
 
 class Module(Base):
     """
@@ -16,16 +15,18 @@ class Module(Base):
 
     __tablename__ = "modules"
 
-    id = Mapped[int] = mapped_column(primary_key=True)
-    learning_path_id = Mapped[int] = mapped_column(ForeignKey("learning_path.id"), index=True)
-    name = Mapped[str]
-    description = Mapped[Optional[str]]
-    order_index = Mapped[int] = mapped_column(index=True)
-    duration_days = Mapped[Optional[int]]
-    prereqs_json = Mapped[Optional[Dict[str, Any]]] = mapped_column(JSONB)
-    learning_objectives = Mapped[Optional[str]]
-    created_at = Mapped[datetime] = mapped_column(insert_default=func.now())
-    updated_at = Mapped[datetime] = mapped_column(insert_default=func.now(), onupdate=func.now())
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    learning_path_id: Mapped[int] = mapped_column(ForeignKey("learning_paths.id", ondelete='CASCADE'), index=True)
+    name: Mapped[str]
+    description: Mapped[Optional[str]]
+    order_index: Mapped[int] = mapped_column(index=True)
+    duration_days: Mapped[Optional[int]]
+    prereqs_json: Mapped[Optional[dict]] = mapped_column(JSON)
+    learning_objectives: Mapped[Optional[str]] = mapped_column(JSON,nullable=True,)
+    created_at: Mapped[datetime] = mapped_column(insert_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(insert_default=func.now(), onupdate=func.now())
+
+    learning_path: Mapped["LearningPath"] = relationship("LearningPath", back_populates="modules")
 
     def __repr__(self):
         return f"<Module(id={self.id}, name={self.name})>"
@@ -34,7 +35,7 @@ class Module(Base):
         return self.name
 
     @classmethod
-    def create(cls, name, learning_path, order_index, description=None, duration_days=None, prereqs_json=None, learning_objectives=None):
+    def create(cls, name, learning_path_id, order_index, description=None, duration_days=None, prereqs_json=None, learning_objectives=None):
         """
         Factory method to create a new module.
         
@@ -52,7 +53,7 @@ class Module(Base):
         """
         return cls(
             name=name,
-            learning_path=learning_path,
+            learning_path_id=learning_path_id,
             order_index=order_index,
             description=description,
             duration_days=duration_days,

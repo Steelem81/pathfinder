@@ -26,12 +26,13 @@ class LearningPath(Base):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
     created_at: Mapped[datetime] = mapped_column(insert_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(insert_default=func.now(), onupdate=func.now())
-    # modules: Mapped[List["Module"]] = relationship(
-    #     back_populates="learning_path",
-    #     cascade="all, delete-orphan",
-    #     lazy="dynamic",
-    #     order_by="Module.order_index"
-    # )
+    modules: Mapped[List["Module"]] = relationship(
+        "Module",
+        back_populates="learning_path",
+        cascade="all, delete-orphan",
+        lazy="dynamic",
+        order_by="Module.order_index"
+    )
 
     def __repr__(self):
         return f"<LearningPath(id={self.id}, name={self.name}, active={self.is_active})>"
@@ -44,8 +45,7 @@ class LearningPath(Base):
     @property
     def module_count(self):
         """Get the total number of modules in learning path"""
-        #Complete after module model finish
-        return 0
+        return self.modules.count()
 
     @property
     def total_resources(self):
