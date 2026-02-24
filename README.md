@@ -3,8 +3,8 @@
 This is a learning project.
 
 ##Learning Techs/Libraries:
--[] SQLAlchemy
--[] Flask
+- [ ] SQLAlchemy
+- [ ] Flask
 
 ## Core Features
 1. Learning Path Management - Create and organize learning topics/modules
