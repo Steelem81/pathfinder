@@ -1,8 +1,10 @@
+import traceback
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 import sys
 from learning_path import Base, LearningPath
+from module import Module
 
 
 
@@ -27,17 +29,18 @@ def test_learning_path_creation():
             estimated_duration_days=30
         )
         session.add(path)
+        
         session.commit()
         
         assert path.id is not None
         assert path.name == "Test Path"
         assert path.is_active is True
         
-        print("✓ PASSED")
+        print("PASSED")
         session.close()
         return True
     except Exception as e:
-        print(f"✗ FAILED: {e}")
+        print(f"FAILED: {e}")
         return False
 
 
@@ -62,11 +65,11 @@ def test_learning_path_query():
         assert result is not None
         assert result.name == "Path 1"
         
-        print("✓ PASSED")
+        print("PASSED")
         session.close()
         return True
     except Exception as e:
-        print(f"✗ FAILED: {e}")
+        print(f"FAILED: {e}")
         return False
 
 
@@ -163,12 +166,39 @@ def test_learning_path_relationships():
         session.commit()
         
         assert path.module_count == 0
-        assert path.total_resources == 0
+
+        mod1 = Module.create(
+            learning_path_id=path.id,
+            name="Module 1",
+            order_index=1,
+            duration_days=7
+        )
+
+        mod2 = Module.create(
+            learning_path_id=path.id,
+            name="Module 2",
+            order_index=2,
+            duration_days=7
+        )
+
+        session.add_all([mod1,mod2])
+        session.commit()
+
+        session.refresh(path)
+
+        assert path.module_count == 2
+
+        modules_list = list(path.modules.all())
+
+        assert len(modules_list) == 2
+        assert modules_list[0].name == "Module 1"
+        assert modules_list[1].name == "Module 2"
         
-        print("SKIPPED (needs Module model)")
+        print("Passed")
         return True
     except Exception as e:
         print(f"FAILED: {e}")
+        traceback.print_exc()
         return False
 
 
