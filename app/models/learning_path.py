@@ -2,9 +2,7 @@ from datetime import datetime
 from typing import Optional, List
 from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, func
 from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped, relationship
-
-class Base(DeclarativeBase):
-    pass
+from .base import Base
 
 class LearningPath(Base):
     """
@@ -26,7 +24,7 @@ class LearningPath(Base):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
     created_at: Mapped[datetime] = mapped_column(insert_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(insert_default=func.now(), onupdate=func.now())
-    modules: Mapped[List["Module"]] = relationship(
+    modules = relationship(
         "Module",
         back_populates="learning_path",
         cascade="all, delete-orphan",
