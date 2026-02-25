@@ -3,11 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 import sys
-from learning_path import Base, LearningPath
-from module import Module
-
-
-
+from models import Base, LearningPath, Module, LearningResource
 
 def create_test_db():
     """Create an in-memory test database."""
@@ -200,7 +196,6 @@ def test_learning_path_relationships():
         print(f"FAILED: {e}")
         traceback.print_exc()
         return False
-
 
 def run_all_tests():
     """Run all test functions."""
