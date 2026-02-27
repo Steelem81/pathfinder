@@ -13,7 +13,7 @@ class LearningResource(Base):
 
     A module contains multiple learning resources
     """
-    __tablename__= 'learning_reasources'
+    __tablename__= 'learning_resources'
 
     id: Mapped[int] = mapped_column(primary_key = True, autoincrement=True)
     module_id: Mapped[int] = mapped_column(ForeignKey("modules.id", ondelete="CASCADE"), index=True)
@@ -32,6 +32,10 @@ class LearningResource(Base):
     updated_at: Mapped[datetime] = mapped_column(insert_default=func.now(), onupdate=func.now())
 
     module = relationship("Module", back_populates="learning_resources")
+    schedules: Mapped[List["Schedule"]] = relationship(
+        "Schedule",
+        back_populates="learning_resource", 
+        cascade="all, delete-orphan")
     
     def __repr__(self) -> str:
         return f"<Module(id={self.id}, title='{self.title}', order_index={self.order_index})>"
