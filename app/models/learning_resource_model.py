@@ -32,14 +32,24 @@ class LearningResource(Base):
     updated_at: Mapped[datetime] = mapped_column(insert_default=func.now(), onupdate=func.now())
 
     module = relationship("Module", back_populates="learning_resources")
+
     schedules: Mapped[List["Schedule"]] = relationship(
         "Schedule",
         back_populates="learning_resource", 
-        cascade="all, delete-orphan")
+        cascade="all, delete-orphan"
+        )
+
     resource_progress: Mapped["ResourceProgress"] = relationship(
         "ResourceProgress",
         back_populates="learning_resource", 
-        cascade="all, delete-orphan")
+        cascade="all, delete-orphan"
+        )
+
+    quiz_questions: Mapped[List["QuizQuestion"]] = relationship(
+        "QuizQuestion",
+        back_populates="learning_resource",
+        cascade="all, delete-orphan"
+        )
     
     def __repr__(self) -> str:
         return f"<Module(id={self.id}, title='{self.title}', order_index={self.order_index})>"

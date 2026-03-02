@@ -1,9 +1,11 @@
 from .base import Base
-from .learning_path import LearningPath
-from .module import Module
-from .learning_resource import LearningResource
-from .schedule import Schedule
-from .resource_progress import ResourceProgress
+from .learning_path_model import LearningPath
+from .module_model import Module
+from .learning_resource_model import LearningResource
+from .schedule_model import Schedule
+from .resource_progress_model import ResourceProgress
+from .quiz_question_model import QuizQuestion
+from .quiz_attempt_model import QuizAttempt
 
 __all__ = [
     "Base",
@@ -11,5 +13,7 @@ __all__ = [
     "Module",
     "LearningResource",
     "Schedule",
-    "ResourceProgress"
+    "ResourceProgress",
+    "QuizQuestion",
+    "QuizAttempt"
 ]
