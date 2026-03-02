@@ -68,6 +68,6 @@ class Schedule(Base):
         self.delivered_at = datetime.utcnow()
 
     def reschedule(self):
-        """TODO - create ability to reschedule"""
+        # TODO implement
         pass
     

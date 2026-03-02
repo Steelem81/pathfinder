@@ -36,6 +36,10 @@ class LearningResource(Base):
         "Schedule",
         back_populates="learning_resource", 
         cascade="all, delete-orphan")
+    resource_progress: Mapped["ResourceProgress"] = relationship(
+        "ResourceProgress",
+        back_populates="learning_resource", 
+        cascade="all, delete-orphan")
     
     def __repr__(self) -> str:
         return f"<Module(id={self.id}, title='{self.title}', order_index={self.order_index})>"
