@@ -1,5 +1,5 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import DeclarativeBase, sessionmaker
+from sqlalchemy import create_engine, MetaData
+from sqlalchemy.orm import declarative_base, sessionmaker
 
 DATABASE_URL = "sqlite:///:memory:"
 
@@ -12,8 +12,5 @@ SessionLocal = sessionmaker(
     future=True
 )
 
-class Base(DeclarativeBase):
-    """
-    Base class for all database models
-    """
-    pass
+metadata = MetaData()
+Base = declarative_base(metadata=metadata)
