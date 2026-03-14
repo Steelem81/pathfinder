@@ -1,15 +1,19 @@
 import os
 from typing import Optional, Dict, Any
 from config.settings import settings
-from anthropic import Client, RateLimitError, APIConnectionError, APIError
+from anthropic import Anthropic, Client, RateLimitError, APIConnectionError, APIError
 
 class ClaudeService:
 
     def __init__(self, api_key: Optional[str]=None):
-        self.api_key = settings.ANTHROPIC_API_KEY
+        self.client = Anthropic(api_key=settings.ANTHROPIC_API_KEY)
         self.model = settings.ANTHROPIC_MODEL
         self.max_tokens = settings.MAX_TOKENS
         self.temperature = settings.TEMPERATURE
+
+        self.total_input_tokens = 0
+        self.total_output_tokens = 0
+        self.request_count = 0
 
     def generate(
         self,
@@ -36,7 +40,7 @@ class ClaudeService:
                 response = self.client.messages.create(**request_params)
 
                 self.total_input_tokens += response.usage.input_tokens
-                self.total_ouput_tokens += response.usage.output_tokens
+                self.total_output_tokens += response.usage.output_tokens
                 self.request_count += 1
 
                 return response.content[0].text
@@ -59,7 +63,7 @@ class ClaudeService:
             
             except Exception as e:
                 raise APIError(f"Claude API Error: {str(e)}") from e
-    # raise APIError("Failed to get response from Claude")
+        raise APIError("Failed to get response from Claude")
 
     def generate_json(
         self,
@@ -73,7 +77,6 @@ class ClaudeService:
         cleaned = response_text.strip()
 
         # Try to extract JSON from response
-        # Sometimes Claude wraps it in markdown code blocks
         cleaned = response_text.strip()
         
         # Remove markdown code blocks if present
